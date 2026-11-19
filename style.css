@@ -1,0 +1,401 @@
+/* 눈누 '그리운 묘은흘림체' 웹폰트 불러오기 */
+@font-face {
+  font-family: 'Griun_MyoeunHeullim-Rg';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2601-1@1.0/Griun_MyoeunHeullim-Rg.woff2') format('woff2');
+  font-weight: normal;
+  font-display: swap;
+}
+
+.email {
+  font-family: 'Griun_MyoeunHeullim-Rg', cursive;
+  font-size: 28px;
+  color: #ffe08a;
+  text-decoration: none;
+}
+
+.email:hover {
+  text-decoration: underline;
+}
+
+/* ===== 마그네틱 글로우 버튼 ===== */
+
+/* 회전 각도를 애니메이션할 수 있도록 등록 */
+@property --glow-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/* 공통 모양: 버튼 바깥 껍데기 (1px 무지개 테두리 역할) */
+.glow-btn {
+  --mx: 50%;
+  --my: 50%;
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  padding: 1.5px;
+  border-radius: 999px;
+  color: white;
+  font-size: 13px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: transform 0.3s ease-out;
+}
+
+/* 빙글빙글 도는 테두리 + 뒤쪽의 흐린 빛 번짐 */
+.glow-btn::before,
+.glow-btn::after {
+  content: "";
+  position: absolute;
+  border-radius: 999px;
+  background: conic-gradient(from var(--glow-angle), var(--glow-colors));
+  animation: glow-spin 3s linear infinite;
+}
+
+.glow-btn::before {
+  inset: 0;
+  z-index: -1;
+}
+
+.glow-btn::after {
+  inset: -6px;
+  z-index: -2;
+  opacity: 0.4;
+  filter: blur(12px);
+  transition: opacity 0.3s;
+}
+
+.glow-btn:hover::after {
+  opacity: 0.9;
+}
+
+/* 버튼 안쪽 (어두운 알약) */
+.glow-btn .inner {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #17111a;
+}
+
+/* 마우스를 따라다니는 하이라이트 */
+.glow-btn .inner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(70px circle at var(--mx) var(--my), rgba(255, 255, 255, 0.25), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+.glow-btn:hover .inner::before {
+  opacity: 1;
+}
+
+.glow-btn .label {
+  position: relative;
+}
+
+/* 클릭했을 때 퍼지는 물결 */
+.glow-btn .ripple {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  pointer-events: none;
+  animation: glow-ripple 0.7s ease-out forwards;
+}
+
+/* 키보드(Tab)로 선택했을 때 보이는 테두리 */
+.glow-btn:focus-visible {
+  outline: 2px solid #d6336c;
+  outline-offset: 5px;
+}
+
+@keyframes glow-spin {
+  to { --glow-angle: 360deg; }
+}
+
+@keyframes glow-ripple {
+  from { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+  to { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+}
+
+/* 움직임 줄이기 설정을 켠 사람에게는 애니메이션을 끔 */
+@media (prefers-reduced-motion: reduce) {
+  .glow-btn::before,
+  .glow-btn::after,
+  .glow-btn .ripple {
+    animation: none;
+  }
+  .glow-btn {
+    transition: none;
+  }
+}
+
+/* 버튼별 색상 */
+.youtube-btn {
+  --glow-colors: #ff0033, #ff8a8a, #ffffff, #ff0033;
+}
+
+.insta-btn {
+  --glow-colors: #feda75, #fa7e1e, #d62976, #962fbf, #4f5bd5, #feda75;
+}
+
+/* 버튼 두 개를 가로로 나란히 */
+.social {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 16px 0;
+}
+
+/* ===== MP3 플레이어 ===== */
+.player {
+  width: 320px;
+  max-width: calc(100% - 32px);
+  margin: 8px auto 4px;
+  padding: 14px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 20px;
+  background: rgba(30, 15, 0, 0.45);
+  backdrop-filter: blur(10px);
+  box-sizing: border-box;
+  text-shadow: none;
+}
+
+/* 곡 제목 */
+.player-title {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 0.02em;
+}
+
+.player-title .note {
+  display: inline-block;
+  margin-right: 4px;
+  color: #ffe08a;
+}
+
+/* 재생 중일 때 음표가 살랑살랑 */
+.player.is-playing .note {
+  animation: note-bounce 1s ease-in-out infinite;
+}
+
+@keyframes note-bounce {
+  50% { transform: translateY(-3px) rotate(-10deg); }
+}
+
+/* 진행 막대 + 시간 */
+.player-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.9;
+}
+
+.player-progress input {
+  flex: 1;
+  min-width: 0;
+  accent-color: #ffe08a;
+  cursor: pointer;
+}
+
+/* 버튼 줄 */
+.player-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  margin-top: 10px;
+}
+
+.player-controls button {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.player-controls button:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.player-controls button:active {
+  transform: scale(0.92);
+}
+
+/* 가운데 재생/일시정지 버튼은 크고 노랗게 */
+.player-controls .play-btn {
+  width: 52px;
+  height: 52px;
+  border: none;
+  background: #ffe08a;
+  color: #4a2c00;
+  font-size: 20px;
+}
+
+.player-controls .play-btn:hover {
+  background: #ffd35c;
+}
+
+.player button:focus-visible,
+.player input:focus-visible {
+  outline: 2px solid #ffe08a;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .player .note { animation: none !important; }
+  .player-controls button { transition: none; }
+}
+
+/* ===== 홀로그램 틸트 카드 (프로필 사진) ===== */
+
+/* 바깥 상자: 기울기 값(--tx, --ty)을 자바스크립트가 여기에 넣어 줌 */
+.holo {
+  --tx: 0;   /* 좌우 기울기 (-1 ~ 1) */
+  --ty: 0;   /* 위아래 기울기 (-1 ~ 1) */
+  --hyp: 0;  /* 얼마나 기울었는지 (0 ~ 1) */
+  position: relative;
+  isolation: isolate;
+  display: inline-block;
+  width: 400px;
+  max-width: 100%;
+  perspective: 1200px;  /* 3D 원근감 */
+  margin: 8px 0 16px;
+}
+
+/* 카드 아래에 깔리는 핑크빛 그림자 */
+.holo-shadow {
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  bottom: -5%;
+  height: 10%;
+  z-index: -1;
+  border-radius: 50%;
+  background: hsl(335 85% 60% / 0.45);
+  filter: blur(18px);
+  translate: calc(var(--tx) * -24px) 0;
+}
+
+/* 실제로 기울어지는 카드 */
+.holo-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 18px;
+  transform: rotateX(calc(var(--ty) * -14deg)) rotateY(calc(var(--tx) * 18deg));
+  box-shadow:
+    0 12px 30px rgba(80, 20, 50, 0.25),
+    0 0 calc(var(--hyp) * 40px) hsl(330 90% 62% / 0.5);
+}
+
+/* 사진은 카드보다 살짝 크게 두고 반대로 움직여 깊이감을 줌 */
+.holo-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  scale: 1.08;
+  translate: calc(var(--tx) * -3%) calc(var(--ty) * -3%);
+  user-select: none;
+}
+
+/* 테두리를 따라 빛나는 얇은 선 */
+.holo-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: linear-gradient(calc(135deg + var(--tx) * 60deg), hsl(330 95% 75%), transparent 35%, transparent 65%, hsl(190 95% 70%));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  pointer-events: none;
+}
+
+/* 무지개빛 홀로그램 포일 (기울수록 진해짐) */
+.holo-foil {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 14 -8.6'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E"),
+    repeating-linear-gradient(115deg, hsl(0 100% 62%) 0%, hsl(55 100% 62%) 4%, hsl(180 100% 62%) 8%, hsl(285 100% 62%) 12%, hsl(0 100% 62%) 16%);
+  background-size: 160px 160px, 300% 300%;
+  background-position: center, calc(50% + var(--tx) * 40%) calc(50% + var(--ty) * 40%);
+  background-blend-mode: screen;
+  mix-blend-mode: color-dodge;
+  opacity: calc(0.06 + var(--hyp) * 0.26);
+  filter: brightness(0.62) contrast(1.5) saturate(1.4);
+  /* 얼굴 부분은 포일을 약하게 */
+  -webkit-mask-image: radial-gradient(ellipse 40% 45% at 50% 30%, #0002, #000 100%);
+  mask-image: radial-gradient(ellipse 40% 45% at 50% 30%, #0002, #000 100%);
+}
+
+/* 빛이 반사되는 하이라이트 */
+.holo-glare {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(farthest-corner circle at calc(50% + var(--tx) * 48%) calc(50% + var(--ty) * 48%), #ffffffd9 0%, #ffffff47 16%, transparent 52%);
+  mix-blend-mode: overlay;
+  opacity: calc(0.3 + var(--hyp) * 0.7);
+}
+
+/* 휴대폰처럼 좁은 화면에서도 사진이 넘치지 않게 */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+body {
+  text-align: center;
+  background-color: #fff6cc;  /* 사진을 불러오기 전 잠깐 보이는 색 */
+  color: white;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);  /* 사진 위에서도 글자가 잘 보이게 */
+}
+
+/* 화면 전체에 고정된 가을 사진 배경 (스크롤해도 그대로) */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(rgba(40, 20, 0, 0.35), rgba(40, 20, 0, 0.55)),  /* 살짝 어둡게 덮기 */
+    url("autumn-bg.jpg") center / cover no-repeat;
+}
+
+/* 상단 문구 */
+h1 {
+  margin: 40px 0 8px;
+  font-family: 'Griun_MyoeunHeullim-Rg', cursive;
+  font-size: clamp(30px, 9vw, 44px);  /* 화면이 좁으면 글자도 작게 */
+  font-weight: normal;
+  word-break: keep-all;  /* 한글 단어가 중간에서 끊기지 않게 */
+}
+
+.intro {
+  max-width: 340px;
+  margin: 0 auto 20px;
+  line-height: 1.7;
+}
